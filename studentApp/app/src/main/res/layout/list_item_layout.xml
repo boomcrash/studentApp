@@ -1,0 +1,85 @@
+<!-- item_persona.xml -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:elevation="4dp">
+
+    <!-- list_item_layout.xml -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imageViewFoto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp">
+
+            <TextView
+                android:id="@+id/textViewNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewApellido"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewCedula"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <!-- Botón para PDF -->
+        <ImageButton
+            android:id="@+id/buttonPdf"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_pdf_icon"
+            android:scaleType="centerCrop"
+            android:layout_margin="4dp"
+            android:background="@null"/>
+
+        <!-- Botón para reproducir audio -->
+        <ImageButton
+            android:id="@+id/buttonAudio"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_audio_icon"
+            android:scaleType="centerCrop"
+            android:layout_margin="4dp"
+            android:background="@null"/>
+
+        <!-- Botón para mostrar información -->
+        <ImageButton
+            android:id="@+id/buttonInfo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_info_icon"
+            android:scaleType="centerCrop"
+            android:layout_margin="4dp"
+            android:background="@null"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

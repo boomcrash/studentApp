@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Hi One</string>
+    <string name="register"><u> Registrate </u></string>
+    <string name="iniciar"><u> Iniciar Sesion </u></string>
+
+    <string-array name="carreras">
+        <item>Ingeniería Civil</item>
+        <item>Medicina</item>
+        <item>Administración de Empresas</item>
+        <item>Derecho</item>
+        <item>Psicología</item>
+        <item>Ingeniería Informática</item>
+        <item>Arquitectura</item>
+        <item>Contabilidad</item>
+        <item>Enfermería</item>
+        <item>Comunicación Social</item>
+    </string-array>
+
+
+    <string-array name="semestres">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+</resources>

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.registro">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#FFCEC3"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!-- Primer LinearLayout con el Lottie animado -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/no_orders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="visible"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/cohete" />
+
+            </LinearLayout>
+
+            <!-- Segundo LinearLayout con el formulario -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:background="@drawable/layout_border_register"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingStart="40dp"
+                android:paddingEnd="40dp">
+                <!-- credenciales -->
+
+
+                <!-- Formulario -->
+                <TextView
+                    android:id="@+id/textViewRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="40dp"
+                    android:hint="REGISTRATE"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textStyle="bold"
+                    android:maxLength="10"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="20dp" />
+
+                <TextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/sectionCredenciales"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:hint="Credenciales"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:background="?android:attr/selectableItemBackground"/>
+
+                <EditText
+                    android:id="@+id/editTextUsername"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:hint="Usuario"
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/sectionDatosP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:hint="Datos Personales"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:background="?android:attr/selectableItemBackground"/>
+
+                <EditText
+                    android:id="@+id/editTextCedula"
+                    android:hint="Cédula (10 dígitos)"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/editTextCelular"
+                    android:hint="Celular (10 dígitos)"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/editTextNombre"
+                    android:hint="Nombre"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/editTextApellido"
+                    android:hint="Apellido"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/editTextCorreo"
+                    android:hint="Correo Electrónico"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/editTextDireccion"
+                    android:hint="Dirección"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/sectionEducacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black"
+                    android:hint="Educacion"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:background="?android:attr/selectableItemBackground"/>
+
+                <Spinner
+                    android:id="@+id/spinnerCarrera"
+                    android:entries="@array/carreras"
+                    android:hint="Carrera"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <Spinner
+                    android:id="@+id/spinnerSemestre"
+                    android:entries="@array/semestres"
+                    android:hint="Semestre"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/input_background"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
+
+                <!-- Puedes usar un botón para seleccionar una foto -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSelectPhoto"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_background"
+                    android:text="Seleccionar Foto" />
+
+                <!-- Botón para grabar el saludo del estudiante -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonRecordAudio"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_background"
+                    android:text="Grabar Saludo (5 segundos)" />
+
+                <!-- Botón para seleccionar el título en PDF -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSelectPDF"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_background"
+                    android:text="Seleccionar Título en PDF" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_register"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/white"
+                    android:text="REGISTRAR"
+                    android:textColor="@drawable/text_foreground"
+                    android:textSize="20dp"
+                    android:textStyle="normal" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/login"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/white"
+                    android:text="@string/iniciar"
+                    android:textColor="#CA4F35"
+                    android:textSize="12dp"
+                    android:textStyle="normal" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
