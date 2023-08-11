@@ -669,12 +669,11 @@ public class registro extends AppCompatActivity {
 
 
 
-    /* GUARDAR IMAGEN EN ALMACENAMIENTO DE DISPOSITIVO */
-    private String saveImageToInternalStorage(Bitmap bitmap, String filename) {
-        // Obtiene el directorio de almacenamiento interno de la aplicación
-        File directory = getApplicationContext().getDir("profile_images", Context.MODE_PRIVATE);
-        // Crea un archivo en el directorio con el nombre "perfil.png"
-        File file = new File(directory, filename);
+    private String saveImageToInternalStorage(Bitmap bitmap) {
+        // Obtiene el directorio de caché interno de la aplicación
+        File cacheDir = getApplicationContext().getCacheDir();
+        // Crea un archivo en el directorio de caché con el nombre "perfil.png"
+        File file = new File(cacheDir,"imagen.pnng");
 
         try {
             // Abre un flujo de salida en el archivo
@@ -689,10 +688,10 @@ public class registro extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        // Obtiene la ruta completa del archivo
+        // Obtiene la ruta completa del archivo en la caché
         return file.getAbsolutePath();
     }
+
 
 
     /* GENERAL PARA TODOS LOS BOTONES */
@@ -703,22 +702,11 @@ public class registro extends AppCompatActivity {
             if (requestCode == REQUEST_IMAGE_PICKER && resultCode == RESULT_OK && data != null) {
                 Uri selectedImageUri = data.getData();
 
-                try {
-                    // Obtiene la imagen desde la URI
-                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-
-                    // Guarda la imagen en la galería de tu aplicación con el nombre "perfil.png"
-                    String imagePath = saveImageToInternalStorage(imageBitmap, "perfil.png");
-
-                    // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
-                    urlFoto = imagePath;
-
-                    // Actualiza el botón u otro elemento de la interfaz según sea necesario
-                    buttonSelectPhoto.setBackgroundResource(R.drawable.button_background_saved);
-                    buttonSelectPhoto.setTextColor(getResources().getColor(R.color.black));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
+                urlFoto = selectedImageUri.toString();
+                // Actualiza el botón u otro elemento de la interfaz según sea necesario
+                buttonSelectPhoto.setBackgroundResource(R.drawable.button_background_saved);
+                buttonSelectPhoto.setTextColor(getResources().getColor(R.color.black));
             }
             else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
                 // Obtiene la imagen tomada con la cámara
@@ -727,7 +715,7 @@ public class registro extends AppCompatActivity {
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
 
                     // Guarda la imagen en la galería de tu aplicación con el nombre "perfil.png"
-                    String imagePath = saveImageToInternalStorage(imageBitmap, "perfil.png");
+                    String imagePath = saveImageToInternalStorage(imageBitmap);
 
                     // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
                     urlFoto = imagePath;
@@ -744,17 +732,13 @@ public class registro extends AppCompatActivity {
                 if (data != null) {
                     Uri pdfUri = data.getData();
 
-                    // Guardar el archivo PDF seleccionado en el almacenamiento interno con el nombre "titulo.pdf"
-                    String pdfPath = savePdfToInternalStorage(pdfUri, "titulo.pdf");
-
                     // Establecer la URL del archivo PDF guardado en la variable urlPdf
-                    urlPdf = pdfPath;
+                    urlPdf = pdfUri.toString();
 
                     // Procesar el archivo PDF seleccionado
                     buttonSelectPDF.setBackgroundResource(R.drawable.button_background_saved);
                     buttonSelectPDF.setTextColor(getResources().getColor(R.color.black));
 
-                    Toast.makeText(this, "PDF seleccionado y guardado: " + pdfPath, Toast.LENGTH_SHORT).show();
                 }
             }
 
