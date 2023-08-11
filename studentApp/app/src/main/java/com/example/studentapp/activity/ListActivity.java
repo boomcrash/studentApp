@@ -2,6 +2,7 @@ package com.example.studentapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.studentapp.R;
@@ -20,11 +21,21 @@ public class ListActivity extends AppCompatActivity {
     private List<Persona> personas;
     private RecyclerView recyclerView;
     private CustomListAdapter adapter;
+    public static String usuario;
+    public static String contrasena;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        //recibir credenciales:
+        Intent intent = getIntent();
+        if (intent != null) {
+            usuario = intent.getStringExtra("usuario");
+            contrasena = intent.getStringExtra("contrasena");
+            // Ahora puedes usar usuario y contrasena en esta actividad
+        }
 
         // Inicializar la lista de personas con datos de ejemplo
         personas = getPersonasFromDatabase();
