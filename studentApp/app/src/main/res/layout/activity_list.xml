@@ -12,8 +12,10 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
-            android:layout_width="match_parent"
+            android:layout_width="261dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
@@ -21,11 +23,24 @@
             android:elevation="4dp"
             android:queryHint="Buscar por cédula" />
 
+        <ImageView
+            android:layout_width="147dp"
+            android:layout_height="47dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="-13dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/searchView"
+            android:contentDescription="Icono de perfil"
+            android:src="@drawable/ic_profile" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/searchView" />
+
+
 
     </RelativeLayout>
 
