@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                                     // El documento con el usuario y contraseña existe
                                     // Realiza las acciones que necesites
                                     Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                                    intent.putExtra("usuario", usuario);
+                                    intent.putExtra("contrasena", contrasena);
                                     startActivity(intent);
                                     finish();
                                 } else {
