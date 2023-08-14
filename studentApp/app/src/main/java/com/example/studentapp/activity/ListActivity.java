@@ -1,5 +1,6 @@
 package com.example.studentapp.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,12 @@ import android.os.Bundle;
 import com.example.studentapp.R;
 import com.example.studentapp.adapters.CustomListAdapter;
 import com.example.studentapp.model.Persona;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,8 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Persona> personas;
+    private Persona p;
     private RecyclerView recyclerView;
     private CustomListAdapter adapter;
     public static String usuario;
@@ -36,9 +44,7 @@ public class ListActivity extends AppCompatActivity {
             contrasena = intent.getStringExtra("contrasena");
             // Ahora puedes usar usuario y contrasena en esta actividad
         }
-
-        // Inicializar la lista de personas con datos de ejemplo
-        personas = getPersonasFromDatabase();
+        getQueryCollecion("estudiante");
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -46,7 +52,7 @@ public class ListActivity extends AppCompatActivity {
         adapter = new CustomListAdapter(personas, this);
         recyclerView.setAdapter(adapter);
 
-        // Configurar el SearchView para filtrar por cédula
+    // Configurar el SearchView para filtrar por cédula
         SearchView searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -63,7 +69,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     // Método para obtener los datos de ejemplo de las personas (simulado)
-    private List<Persona> getPersonasFromDatabase() {
+    /*private List<Persona> getPersonasFromDatabase() {
         // Aquí implementarías la lógica para obtener los datos de las personas desde tu base de datos
         // y las devolverías como una lista de objetos Persona
         // Por ahora, lo simularemos con datos de ejemplo:
@@ -100,6 +106,38 @@ public class ListActivity extends AppCompatActivity {
                 "https://www.redalyc.org/pdf/706/70645811001.pdf", "/storage/emulated/0/Audio/hola4.mp3"));
 
         return personas;
+    }*/
+    public void getQueryCollecion(String collectionName){
+        db.collection(collectionName).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                personas = new ArrayList<>();
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    p = new Persona(
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            1,
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula"),
+                            documentSnapshot.getString("cedula")
+                    );
+                    personas.add(p);
+                }
+
+                // Aquí tienes la lista de personas
+                // Puedes realizar acciones con la lista, como mostrarla en un RecyclerView
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Manejar el error si ocurre
+            }
+        });
     }
 
     // Método para filtrar las personas por cédula
