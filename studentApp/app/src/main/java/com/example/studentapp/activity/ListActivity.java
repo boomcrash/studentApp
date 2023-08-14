@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.studentapp.MainActivity;
 import com.example.studentapp.R;
 import com.example.studentapp.adapters.CustomListAdapter;
 import com.example.studentapp.model.Persona;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,11 +22,12 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Persona> personas;
     private Persona p;
     private RecyclerView recyclerView;
@@ -44,7 +47,10 @@ public class ListActivity extends AppCompatActivity {
             contrasena = intent.getStringExtra("contrasena");
             // Ahora puedes usar usuario y contrasena en esta actividad
         }
-        getQueryCollecion("estudiante");
+        getQueryCollecion();
+        //personas = getPersonasFromDatabase();
+        //obtenerDatosDocumento("estudiante","boomer");
+        //verificarCredenciales();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -69,7 +75,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     // Método para obtener los datos de ejemplo de las personas (simulado)
-    /*private List<Persona> getPersonasFromDatabase() {
+    private List<Persona> getPersonasFromDatabase() {
         // Aquí implementarías la lógica para obtener los datos de las personas desde tu base de datos
         // y las devolverías como una lista de objetos Persona
         // Por ahora, lo simularemos con datos de ejemplo:
@@ -106,29 +112,33 @@ public class ListActivity extends AppCompatActivity {
                 "https://www.redalyc.org/pdf/706/70645811001.pdf", "/storage/emulated/0/Audio/hola4.mp3"));
 
         return personas;
-    }*/
-    public void getQueryCollecion(String collectionName){
-        db.collection(collectionName).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    }
+    public void getQueryCollecion(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference estudianteC = db.collection("estudiante");
+        //List<Persona> ls = new ArrayList<>();
+        estudianteC
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                personas = new ArrayList<>();
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    p = new Persona(
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            1,
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula"),
-                            documentSnapshot.getString("cedula")
+                    personas.add(
+                            new Persona(
+                                    documentSnapshot.getString("cedula"),
+                                    documentSnapshot.getString("celular"),
+                                    documentSnapshot.getString("nombre"),
+                                    documentSnapshot.getString("apellido"),
+                                    documentSnapshot.getString("correo"),
+                                    documentSnapshot.getString("direccion"),
+                                    documentSnapshot.getString("carrera"),
+                                    documentSnapshot.getLong("semestre").intValue(),
+                                    documentSnapshot.getString("urlFoto"),
+                                    documentSnapshot.getString("urlPdf"),
+                                    documentSnapshot.getString("urlAudio")
+                            )
                     );
-                    personas.add(p);
                 }
-
                 // Aquí tienes la lista de personas
                 // Puedes realizar acciones con la lista, como mostrarla en un RecyclerView
             }
@@ -138,6 +148,41 @@ public class ListActivity extends AppCompatActivity {
                 // Manejar el error si ocurre
             }
         });
+    }
+    private void queryTest() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference credencialesRef = db.collection("credenciales");
+
+        Task<QuerySnapshot> queryTask = credencialesRef
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                                // Verifica si el documento actual existe en Firestore
+                                if (documentSnapshot.exists()) {
+                                    // El documento con el usuario y contraseña existe
+
+                                    //finish();
+                                } else {
+                                    // El documento no existe con los valores proporcionados
+                                    // Maneja este caso según tus necesidades
+                                    //Toast.makeText(MainActivity.this, "CREDENCIALES INCORRECTAS", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //Toast.makeText(MainActivity.this, "ERROR DE CONSULTA DE USUARIO", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
     }
 
     // Método para filtrar las personas por cédula
