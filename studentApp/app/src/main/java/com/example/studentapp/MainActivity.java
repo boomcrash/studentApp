@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
+private static String USUARIO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +54,25 @@ public class MainActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                USUARIO = editTextUsername.getText().toString().trim();
                 // Cambiar a la actividad "activity_login"
                 //Toast.makeText(MainActivity.this, editTextUsername.getText().toString().trim()+" "+editTextPassword.getText().toString().trim(), Toast.LENGTH_SHORT).show();
 
                 //validar existe usuario y contrasena
                 // Obtén una referencia a la colección 'credenciales'
                 verificarCredenciales(editTextUsername.getText().toString().trim(),editTextPassword.getText().toString().trim());
-
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                //intent.putExtra("Usuario", USUARIO;
+                startActivity(intent);
+                finish();
             }
+
         });
 
+    }
+
+    public static String getUSUARIO() {
+        return USUARIO;
     }
 
     private void verificarCredenciales(String usuario, String contrasena) {
@@ -108,4 +118,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 }

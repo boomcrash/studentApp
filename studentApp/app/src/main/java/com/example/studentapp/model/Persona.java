@@ -12,6 +12,7 @@ public class Persona {
     private String pdfUrl;
     private String audioUrl;
 
+    public Persona(){}
     // Constructor
     public Persona(String cedula, String celular, String nombre, String apellido,
                    String correo, String direccion, String carrera, int nivelCarrera,
@@ -74,5 +75,49 @@ public class Persona {
 
     public String getAudioUrl() {
         return audioUrl;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public void setCarrera(String carrera) {
+        this.carrera = carrera;
+    }
+
+    public void setNivelCarrera(int nivelCarrera) {
+        this.nivelCarrera = nivelCarrera;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+
+    public void setPdfUrl(String pdfUrl) {
+        this.pdfUrl = pdfUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
     }
 }
