@@ -47,7 +47,7 @@ public class perfilActivity extends AppCompatActivity {
         TextView textViewDireccion = findViewById(R.id.textViewDireccion);
         TextView textViewCarrera = findViewById(R.id.textViewCarrera);
         TextView textViewNivelCarrera = findViewById(R.id.textViewNivelCarrera);
-
+        Button buttonEditProfile = findViewById(R.id.buttonEditProfile);
 
         cargarPerfil(new OnProfileLoadedListener() {
             @Override
@@ -55,7 +55,7 @@ public class perfilActivity extends AppCompatActivity {
                 textViewCedula.setText("Cédula: " + p.getCedula());
                 textViewNombre.setText("Nombre: " + p.getNombre());
                 textViewApellido.setText("Apellido: " + p.getApellido());
-                //textViewCelular.setText("Celular: " + p.getCelular());
+                textViewCelular.setText("Celular: " + p.getCelular());
                 textViewCorreo.setText("Correo: " + p.getCorreo());
                 textViewDireccion.setText("Direccion: " + p.getDireccion());
                 textViewCarrera.setText("Carrera: " + p.getCarrera());
@@ -71,6 +71,22 @@ public class perfilActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(perfilActivity.this, FullScreenImageActivity.class);
                         intent.putExtra("image_url", p.getFotoUrl());
+                        startActivity(intent);
+                    }
+                });
+                buttonEditProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(perfilActivity.this, EditProfileActivity.class);
+                        intent.putExtra("usuario",usuario);
+                        intent.putExtra("cedula", p.getCedula());
+                        intent.putExtra("celular", p.getCelular());
+                        intent.putExtra("nombre", p.getNombre());
+                        intent.putExtra("apellido", p.getApellido());
+                        intent.putExtra("correo", p.getCorreo());
+                        intent.putExtra("direccion", p.getDireccion());
+                        intent.putExtra("carrera", p.getCarrera());
+                        intent.putExtra("semestre", p.getNivelCarrera()+"");
                         startActivity(intent);
                     }
                 });

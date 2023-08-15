@@ -84,4 +84,10 @@
         android:textSize="16sp"
         android:textColor="@color/secondary_text" />
 
+    <Button
+        android:id="@+id/buttonEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Editar perfil" />
+
 </LinearLayout>
