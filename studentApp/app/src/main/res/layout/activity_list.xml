@@ -32,6 +32,7 @@
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/searchView"
             android:contentDescription="Icono de perfil"
+            android:id="@+id/imageViewProfile"
             android:src="@drawable/ic_profile" />
 
         <androidx.recyclerview.widget.RecyclerView

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.studentapp.MainActivity;
 import com.example.studentapp.R;
 import com.example.studentapp.adapters.CustomListAdapter;
 import com.example.studentapp.model.Persona;
@@ -13,6 +14,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +33,26 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+       // String receivedUserUid = getIntent().getStringExtra("Usuario");
 
+        //Ingresar al Perfil
+        ImageView imageViewProfile = findViewById(R.id.imageViewProfile);
+        // manipular el ImageView como desees
+        imageViewProfile.setImageResource(R.drawable.ic_profile);
+
+        // Configurar el evento de click para ingresar al perfil"
+        imageViewProfile.setOnClickListener(new View.OnClickListener() {
+       @Override
+          public void onClick(View v) {
+                // Cambiar a la actividad "activity_perfil"
+            //  Toast.makeText(ListActivity.this, MainActivity.getUSUARIO(), Toast.LENGTH_SHORT).show();
+           Intent intent = new Intent(ListActivity.this, perfilActivity.class);
+           intent.putExtra("usuario",MainActivity.getUSUARIO());
+            startActivity(intent);
+            finish();
+
+         }
+      });
 
         //recibir credenciales:
         Intent intent = getIntent();
