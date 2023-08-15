@@ -60,19 +60,29 @@ private static String USUARIO;
 
                 //validar existe usuario y contrasena
                 // Obtén una referencia a la colección 'credenciales'
-                verificarCredenciales(editTextUsername.getText().toString().trim(),editTextPassword.getText().toString().trim());
-                Intent intent = new Intent(MainActivity.this, ListActivity.class);
-                //intent.putExtra("Usuario", USUARIO;
-                startActivity(intent);
-                finish();
-            }
 
+                if(validarCredenciales(editTextUsername.getText().toString().trim(),editTextPassword.getText().toString().trim())){
+                    verificarCredenciales(editTextUsername.getText().toString().trim(),editTextPassword.getText().toString().trim());
+                }else{
+                    Toast.makeText(MainActivity.this, "INGRESE SUS CREDENCIALES", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
     }
 
     public static String getUSUARIO() {
         return USUARIO;
+    }
+
+    private boolean validarCredenciales(String... args){
+        for (String arg: args) {
+            System.out.println(arg);
+            if(arg == null || arg.isEmpty()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private void verificarCredenciales(String usuario, String contrasena) {
