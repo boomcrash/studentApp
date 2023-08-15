@@ -120,10 +120,10 @@ public class registro extends AppCompatActivity {
                     Toast.makeText(registro.this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!(FILE_AUDIO_SAVED && FILE_IMAGE_SAVED && FILE_PDF_CHOOSE)) {
+                /*if (!(FILE_AUDIO_SAVED && FILE_IMAGE_SAVED && FILE_PDF_CHOOSE)) {
                     Toast.makeText(registro.this, "Por favor sube los archivos requeridos", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
                 existeUsuario(editTextUsername.getText().toString().trim(), new OnCheckUserExistenceListener() {
                     @Override
                     public void onCheckUserExistence(boolean existe) {
@@ -135,9 +135,9 @@ public class registro extends AppCompatActivity {
                             ProgressDialog progressDialog = ProgressDialog.show(registro.this, "", "Cargando...", true);
 
                             // Ruta en Firebase Storage donde se guardará el archivo de audio
-                            String audioStoragePath = "audios/" + editTextUsername.getText().toString().trim() + "/audio_recording.3gp";
+                            String audioStoragePath = "audios/" + editTextUsername.getText().toString().trim() + "/audio_recording.mp3";
 
-                            String localAudioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp"; // Reemplaza con la ruta real
+                            String localAudioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3"; // Reemplaza con la ruta real
 
                             StorageReference audioRef = storageRef.child(audioStoragePath);
 
@@ -544,9 +544,9 @@ public class registro extends AppCompatActivity {
         try {
             // Configurar la fuente de audio y el formato de salida
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setOutputFile(getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp");
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mediaRecorder.setOutputFile(getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3");
             // Iniciar la grabación
             mediaRecorder.prepare();
             mediaRecorder.start();
@@ -619,7 +619,7 @@ public class registro extends AppCompatActivity {
         builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp";
+                String audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3";
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 try {
                     mediaPlayer.setDataSource(audioFilePath);
@@ -642,7 +642,7 @@ public class registro extends AppCompatActivity {
     private void playAudio(ProgressDialog progressDialog) {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp");
+            mediaPlayer.setDataSource(getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3");
             mediaPlayer.prepare();
             mediaPlayer.start();
 
