@@ -63,7 +63,9 @@ public class registro extends AppCompatActivity {
     private static final int REQUEST_IMAGE_PICKER = 2;
     private static final int REQUEST_AUDIO_RECORD = 3;
     private static final int REQUEST_PDF_PICK = 4;
-
+    private boolean FILE_AUDIO_SAVED = false;
+    private boolean FILE_IMAGE_SAVED = false;
+    private boolean FILE_PDF_CHOOSE = false;
     private MediaRecorder mediaRecorder;
     private boolean isRecording = false;
     private boolean isRecorded = false;
@@ -102,80 +104,106 @@ public class registro extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Mostrar el cuadro de diálogo de carga
-                ProgressDialog progressDialog = ProgressDialog.show(registro.this, "", "Cargando...", true);
-
-                // Ruta en Firebase Storage donde se guardará el archivo de audio
-                String audioStoragePath = "audios/" + editTextUsername.getText().toString().trim() + "/audio_recording.3gp";
-
-                String localAudioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp"; // Reemplaza con la ruta real
-
-                StorageReference audioRef = storageRef.child(audioStoragePath);
-
-                UploadTask audioUploadTask = audioRef.putFile(Uri.fromFile(new File(localAudioFilePath)));
-
-                audioUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                Map<String, Object> userCredentials = new HashMap<>();
+                userCredentials.put("usuario", editTextUsername.getText().toString().trim());
+                userCredentials.put("contrasena", editTextPassword.getText().toString().trim());
+                Map<String, Object> userDataRegister = new HashMap<>();
+                userDataRegister.put("cedula", editTextCedula.getText().toString().trim());
+                userDataRegister.put("usuario", editTextUsername.getText().toString().trim());
+                userDataRegister.put("nombre", editTextNombre.getText().toString().trim());
+                userDataRegister.put("apellido", editTextApellido.getText().toString().trim());
+                userDataRegister.put("correo", editTextCorreo.getText().toString().trim());
+                userDataRegister.put("direccion", editTextDireccion.getText().toString().trim());
+                userDataRegister.put("carrera", spinnerCarrera.getSelectedItem().toString().trim());
+                userDataRegister.put("semestre", spinnerSemestre.getSelectedItem().toString().trim());
+                if (camposVacios(userCredentials) || camposVacios(userDataRegister)) {
+                    Toast.makeText(registro.this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                /*if (!(FILE_AUDIO_SAVED && FILE_IMAGE_SAVED && FILE_PDF_CHOOSE)) {
+                    Toast.makeText(registro.this, "Por favor sube los archivos requeridos", Toast.LENGTH_SHORT).show();
+                    return;
+                }*/
+                existeUsuario(editTextUsername.getText().toString().trim(), new OnCheckUserExistenceListener() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot audioTaskSnapshot) {
-                        // El archivo de audio se subió exitosamente, obtén la URL de descarga
-                        Task<Uri> audioDownloadUrlTask = audioRef.getDownloadUrl();
+                    public void onCheckUserExistence(boolean existe) {
+                        if (existe) {
+                            Toast.makeText(registro.this, "Nombre de usuario registrado, Intente con otro", Toast.LENGTH_SHORT).show();
+                            return;
+                        }else{
+                            // Mostrar el cuadro de diálogo de carga
+                            ProgressDialog progressDialog = ProgressDialog.show(registro.this, "", "Cargando...", true);
 
-                        audioDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri audioUri) {
-                                // La URL de descarga del archivo de audio en Firebase Storage
-                                String urlAudioFb = audioUri.toString();
+                            // Ruta en Firebase Storage donde se guardará el archivo de audio
+                            String audioStoragePath = "audios/" + editTextUsername.getText().toString().trim() + "/audio_recording.mp3";
 
-                                // Subir la imagen a Firebase Storage y obtener su URL
-                                String imageStoragePath = "imagenes/" + editTextUsername.getText().toString().trim() + "/perfil.png";
-                                StorageReference imageRef = storageRef.child(imageStoragePath);
-                                UploadTask imageUploadTask = imageRef.putFile(Uri.parse(urlFoto));
+                            String localAudioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3"; // Reemplaza con la ruta real
 
-                                imageUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot imageTaskSnapshot) {
-                                        // El archivo de imagen se subió exitosamente, obtén la URL de descarga
-                                        Task<Uri> imageDownloadUrlTask = imageRef.getDownloadUrl();
+                            StorageReference audioRef = storageRef.child(audioStoragePath);
 
-                                        imageDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri imageUri) {
-                                                // La URL de descarga del archivo de imagen en Firebase Storage
-                                                String urlFotoFb = imageUri.toString();
+                            UploadTask audioUploadTask = audioRef.putFile(Uri.fromFile(new File(localAudioFilePath)));
 
-                                                // Subir el PDF a Firebase Storage y obtener su URL
-                                                String pdfStoragePath = "pdfs/" + editTextUsername.getText().toString().trim() + "/titulo.pdf";
-                                                StorageReference pdfRef = storageRef.child(pdfStoragePath);
-                                                UploadTask pdfUploadTask = pdfRef.putFile(Uri.parse(urlPdf));
+                            audioUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot audioTaskSnapshot) {
+                                    // El archivo de audio se subió exitosamente, obtén la URL de descarga
+                                    Task<Uri> audioDownloadUrlTask = audioRef.getDownloadUrl();
+                                    audioDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri audioUri) {
+                                            // La URL de descarga del archivo de audio en Firebase Storage
+                                            String urlAudioFb = audioUri.toString();
+                                            // Subir la imagen a Firebase Storage y obtener su URL
+                                            String imageStoragePath = "imagenes/" + editTextUsername.getText().toString().trim() + "/perfil.png";
+                                            StorageReference imageRef = storageRef.child(imageStoragePath);
+                                            UploadTask imageUploadTask = imageRef.putFile(Uri.parse(urlFoto));
 
-                                                pdfUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(UploadTask.TaskSnapshot pdfTaskSnapshot) {
-                                                        // El archivo PDF se subió exitosamente, obtén la URL de descarga
-                                                        Task<Uri> pdfDownloadUrlTask = pdfRef.getDownloadUrl();
+                                            imageUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onSuccess(UploadTask.TaskSnapshot imageTaskSnapshot) {
+                                                    // El archivo de imagen se subió exitosamente, obtén la URL de descarga
+                                                    Task<Uri> imageDownloadUrlTask = imageRef.getDownloadUrl();
 
-                                                        pdfDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                            @Override
-                                                            public void onSuccess(Uri pdfUri) {
-                                                                // La URL de descarga del archivo PDF en Firebase Storage
-                                                                String urlPdfFb = pdfUri.toString();
-                                                                Map<String, Object> userCredentials = new HashMap<>();
-                                                                userCredentials.put("usuario", editTextUsername.getText().toString().trim());
-                                                                userCredentials.put("contrasena", editTextPassword.getText().toString().trim());
-                                                                // Llamar a la función para guardar en Firestore
-                                                                guardarEnFirestore(urlAudioFb, urlFotoFb, urlPdfFb,userCredentials, progressDialog);
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                                                    imageDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                        @Override
+                                                        public void onSuccess(Uri imageUri) {
+                                                            // La URL de descarga del archivo de imagen en Firebase Storage
+                                                            String urlFotoFb = imageUri.toString();
+
+                                                            // Subir el PDF a Firebase Storage y obtener su URL
+                                                            String pdfStoragePath = "pdfs/" + editTextUsername.getText().toString().trim() + "/titulo.pdf";
+                                                            StorageReference pdfRef = storageRef.child(pdfStoragePath);
+                                                            UploadTask pdfUploadTask = pdfRef.putFile(Uri.parse(urlPdf));
+
+                                                            pdfUploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(UploadTask.TaskSnapshot pdfTaskSnapshot) {
+                                                                    // El archivo PDF se subió exitosamente, obtén la URL de descarga
+                                                                    Task<Uri> pdfDownloadUrlTask = pdfRef.getDownloadUrl();
+
+                                                                    pdfDownloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                        @Override
+                                                                        public void onSuccess(Uri pdfUri) {
+                                                                            // La URL de descarga del archivo PDF en Firebase Storage
+                                                                            String urlPdfFb = pdfUri.toString();
+                                                                            // Llamar a la función para guardar en Firestore
+                                                                            guardarEnFirestore(urlAudioFb, urlFotoFb, urlPdfFb,userCredentials, progressDialog);
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 });
+
             }
         });
 
@@ -310,6 +338,25 @@ public class registro extends AppCompatActivity {
         });
     }
 
+    private void existeUsuario(String user, final OnCheckUserExistenceListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("credenciales")
+                .whereEqualTo("usuario", user)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        boolean existe = !task.getResult().isEmpty();
+                        listener.onCheckUserExistence(existe);
+                    } else {
+                        // Ocurrió un error al obtener los documentos
+                        listener.onCheckUserExistence(false);
+                    }
+                });
+    }
+    interface OnCheckUserExistenceListener {
+        void onCheckUserExistence(boolean existe);
+    }
+
     private void showPhotoPickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Seleccionar Foto");
@@ -343,12 +390,6 @@ public class registro extends AppCompatActivity {
     private void guardarEnFirestore(String urlAudio,String urlFoto,String urlPdf, Map<String, Object> userCredentials,ProgressDialog progressDialog) {
         // Obtén una referencia a la base de datos Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Validación de campos no vacíos
-        if (camposVacios(userCredentials)) {
-            Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         // Agregar usuario y contraseña a la colección 'credenciales'
         Map<String, Object> credencialesData = new HashMap<>();
@@ -415,9 +456,16 @@ public class registro extends AppCompatActivity {
 
     private boolean camposVacios(Map<String, Object> userData) {
         for (Map.Entry<String, Object> entry : userData.entrySet()) {
-            if (entry.getValue() instanceof String && TextUtils.isEmpty((String) entry.getValue())) {
+            if ((entry.getValue() instanceof String && TextUtils.isEmpty((String) entry.getValue())) || entry.getValue() == null) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean camposVacios(String word) {
+        if ((word instanceof String && word.isEmpty()) || word == null) {
+            return true;
         }
         return false;
     }
@@ -496,9 +544,9 @@ public class registro extends AppCompatActivity {
         try {
             // Configurar la fuente de audio y el formato de salida
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setOutputFile(getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp");
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mediaRecorder.setOutputFile(getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3");
             // Iniciar la grabación
             mediaRecorder.prepare();
             mediaRecorder.start();
@@ -571,7 +619,7 @@ public class registro extends AppCompatActivity {
         builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp";
+                String audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3";
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 try {
                     mediaPlayer.setDataSource(audioFilePath);
@@ -580,6 +628,7 @@ public class registro extends AppCompatActivity {
                     isRecorded=true;
                     buttonRecordAudio.setBackgroundResource(R.drawable.button_background_saved);
                     buttonRecordAudio.setTextColor(getResources().getColor(R.color.black));
+                    FILE_AUDIO_SAVED = true;
                     dialog.dismiss();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -593,7 +642,7 @@ public class registro extends AppCompatActivity {
     private void playAudio(ProgressDialog progressDialog) {
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(getExternalCacheDir().getAbsolutePath() + "/audio_recording.3gp");
+            mediaPlayer.setDataSource(getExternalCacheDir().getAbsolutePath() + "/audio_recording.mp3");
             mediaPlayer.prepare();
             mediaPlayer.start();
 
@@ -669,12 +718,11 @@ public class registro extends AppCompatActivity {
 
 
 
-    /* GUARDAR IMAGEN EN ALMACENAMIENTO DE DISPOSITIVO */
-    private String saveImageToInternalStorage(Bitmap bitmap, String filename) {
-        // Obtiene el directorio de almacenamiento interno de la aplicación
-        File directory = getApplicationContext().getDir("profile_images", Context.MODE_PRIVATE);
-        // Crea un archivo en el directorio con el nombre "perfil.png"
-        File file = new File(directory, filename);
+    private String saveImageToInternalStorage(Bitmap bitmap) {
+        // Obtiene el directorio de caché interno de la aplicación
+        File cacheDir = getApplicationContext().getCacheDir();
+        // Crea un archivo en el directorio de caché con el nombre "perfil.png"
+        File file = new File(cacheDir,"imagen.png");
 
         try {
             // Abre un flujo de salida en el archivo
@@ -689,10 +737,10 @@ public class registro extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        // Obtiene la ruta completa del archivo
+        // Obtiene la ruta completa del archivo en la caché
         return file.getAbsolutePath();
     }
+
 
 
     /* GENERAL PARA TODOS LOS BOTONES */
@@ -703,22 +751,11 @@ public class registro extends AppCompatActivity {
             if (requestCode == REQUEST_IMAGE_PICKER && resultCode == RESULT_OK && data != null) {
                 Uri selectedImageUri = data.getData();
 
-                try {
-                    // Obtiene la imagen desde la URI
-                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-
-                    // Guarda la imagen en la galería de tu aplicación con el nombre "perfil.png"
-                    String imagePath = saveImageToInternalStorage(imageBitmap, "perfil.png");
-
-                    // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
-                    urlFoto = imagePath;
-
-                    // Actualiza el botón u otro elemento de la interfaz según sea necesario
-                    buttonSelectPhoto.setBackgroundResource(R.drawable.button_background_saved);
-                    buttonSelectPhoto.setTextColor(getResources().getColor(R.color.black));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
+                urlFoto = selectedImageUri.toString();
+                // Actualiza el botón u otro elemento de la interfaz según sea necesario
+                buttonSelectPhoto.setBackgroundResource(R.drawable.button_background_saved);
+                buttonSelectPhoto.setTextColor(getResources().getColor(R.color.black));
             }
             else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
                 // Obtiene la imagen tomada con la cámara
@@ -727,11 +764,11 @@ public class registro extends AppCompatActivity {
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
 
                     // Guarda la imagen en la galería de tu aplicación con el nombre "perfil.png"
-                    String imagePath = saveImageToInternalStorage(imageBitmap, "perfil.png");
+                    String imagePath = saveImageToInternalStorage(imageBitmap);
 
                     // Obtiene la URL de la imagen guardada y la almacena en la variable urlFoto
                     urlFoto = imagePath;
-
+                    FILE_IMAGE_SAVED = (urlFoto != null || urlFoto.isEmpty()) ? true : false;
                     // Actualiza el botón u otro elemento de la interfaz según sea necesario
                     buttonSelectPhoto.setBackgroundResource(R.drawable.button_background_saved);
                     buttonSelectPhoto.setTextColor(getResources().getColor(R.color.black));
@@ -744,17 +781,13 @@ public class registro extends AppCompatActivity {
                 if (data != null) {
                     Uri pdfUri = data.getData();
 
-                    // Guardar el archivo PDF seleccionado en el almacenamiento interno con el nombre "titulo.pdf"
-                    String pdfPath = savePdfToInternalStorage(pdfUri, "titulo.pdf");
-
                     // Establecer la URL del archivo PDF guardado en la variable urlPdf
-                    urlPdf = pdfPath;
-
+                    urlPdf = pdfUri.toString();
+                    FILE_PDF_CHOOSE = (urlPdf != null || urlPdf.isEmpty()) ? true : false;
                     // Procesar el archivo PDF seleccionado
                     buttonSelectPDF.setBackgroundResource(R.drawable.button_background_saved);
                     buttonSelectPDF.setTextColor(getResources().getColor(R.color.black));
 
-                    Toast.makeText(this, "PDF seleccionado y guardado: " + pdfPath, Toast.LENGTH_SHORT).show();
                 }
             }
 

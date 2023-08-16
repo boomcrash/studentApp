@@ -1,6 +1,7 @@
 package com.example.studentapp.adapters;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -34,13 +35,19 @@ import android.content.DialogInterface;
 import android.widget.Toast;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ViewHolder> {
 
     private List<Persona> personas;
     private Context context;
+    ProgressDialog progressDialog;
 
     public CustomListAdapter(List<Persona> personas, Context context) {
         this.personas = personas;
@@ -128,62 +135,63 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
 
                 // Verificar y solicitar permisos si es necesario
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // Solicitar permiso para leer el almacenamiento externo
-                    ActivityCompat.requestPermissions((ListActivity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // Solicitar permiso para escribir en el almacenamiento externo
+                    ActivityCompat.requestPermissions((ListActivity)context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
                     return;
                 }
 
-                // Si los permisos ya están concedidos, puedes reproducir el audio
-                playAudio(audioUrl);
+                // Mostrar ProgressDialog
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Cargando...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+                // Descargar y reproducir el audio
+                new DownloadAudioTask(context).execute(audioUrl);
             }
         });
 
 
+
     }
 
-    // Método para reproducir el audio
-    private void playAudio(String audioUrl) {
-        // Mostrar ProgressDialog mientras se carga y reproduce el audio
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Cargando audio...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
 
-        // Reproducir el audio en segundo plano usando AsyncTask
-        new PlayAudioTask(progressDialog).execute(audioUrl);
-    }
+    private class DownloadAudioTask extends AsyncTask<String, Void, Boolean> {
+        private Context context;
 
-    private class PlayAudioTask extends AsyncTask<String, Void, Boolean> {
-
-        private ProgressDialog progressDialog;
-
-        public PlayAudioTask(ProgressDialog progressDialog) {
-            this.progressDialog = progressDialog;
+        public DownloadAudioTask(Context context) {
+            this.context = context;
         }
 
         @Override
-        protected Boolean doInBackground(String... strings) {
+        protected Boolean doInBackground(String... urls) {
+            String audioUrl = urls[0];
+
             try {
-                // Configurar el reproductor de audio para reproducir desde la ruta proporcionada
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                mediaPlayer.setDataSource(strings[0]);
+                URL url = new URL(audioUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
-                // Configurar atributos de audio para asegurar una reproducción adecuada
-                mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                        .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-                        .build());
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    return false;
+                }
 
-                // Preparar y reproducir el audio
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        // Liberar recursos después de la reproducción
-                        mediaPlayer.release();
-                    }
-                });
+                InputStream input = connection.getInputStream();
+
+                File audioFile = new File(context.getExternalFilesDir(null), "audio_playing.mp3");
+                OutputStream output = context.getContentResolver().openOutputStream(Uri.fromFile(audioFile));
+
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, length);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
 
                 return true;
             } catch (IOException e) {
@@ -194,13 +202,40 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Vi
 
         @Override
         protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
-            progressDialog.dismiss();
-            if (!success) {
-                Toast.makeText(context, "Error al reproducir audio", Toast.LENGTH_SHORT).show();
+            // Cerrar ProgressDialog
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (success) {
+                // Reproduce el audio desde el archivo descargado
+                File audioFile = new File(context.getExternalFilesDir(null), "audio_playing.mp3");
+                playAudio(audioFile.getAbsolutePath());
             }
         }
     }
+
+    // Método para reproducir el audio
+    private void playAudio(String audioFilePath) {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+
+        try {
+            mediaPlayer.setDataSource(audioFilePath);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    // Liberar los recursos del reproductor cuando se complete la reproducción
+                    mp.release();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void showImageURLDialog(String imageURL) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

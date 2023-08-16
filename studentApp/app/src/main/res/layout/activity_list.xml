@@ -24,6 +24,7 @@
             android:queryHint="Buscar por cédula" />
 
         <ImageView
+            android:id="@+id/imageViewProfile"
             android:layout_width="147dp"
             android:layout_height="47dp"
             android:layout_alignParentTop="true"
