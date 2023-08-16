@@ -1,5 +1,7 @@
 package com.example.studentapp.activity;
 
+import static com.example.studentapp.activity.ListActivity.contrasena;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +38,7 @@ public class perfilActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             usuario = intent.getStringExtra("usuario");
+            contrasena = intent.getStringExtra("contrasena");
             // Ahora puedes usar usuario y contrasena en esta actividad
         }
         ImageView imageViewFoto = findViewById(R.id.imageViewFoto);
@@ -80,6 +83,7 @@ public class perfilActivity extends AppCompatActivity {
                         Intent intent = new Intent(perfilActivity.this, EditProfileActivity.class);
                         intent.putExtra("usuario",usuario);
                         intent.putExtra("cedula", p.getCedula());
+                        intent.putExtra("contrasena", contrasena);
                         intent.putExtra("celular", p.getCelular());
                         intent.putExtra("nombre", p.getNombre());
                         intent.putExtra("apellido", p.getApellido());

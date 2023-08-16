@@ -75,6 +75,7 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    personas= new ArrayList<>();
                     QuerySnapshot queryDocumentSnapshots = task.getResult();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         personas.add(new Persona(
