@@ -75,8 +75,6 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    List<Persona> personas = new ArrayList<>();
-
                     QuerySnapshot queryDocumentSnapshots = task.getResult();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         personas.add(new Persona(
@@ -99,21 +97,6 @@ public class ListActivity extends AppCompatActivity {
 
                     adapter = new CustomListAdapter(personas, ListActivity.this);
                     recyclerView.setAdapter(adapter);
-
-                    // Configurar el SearchView para filtrar por cédula
-                    SearchView searchView = findViewById(R.id.searchView);
-                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-                            filterPersonasByCedula(newText);
-                            return true;
-                        }
-                    });
                 } else {
                     Exception exception = task.getException();
                     if (exception != null) {
@@ -122,54 +105,32 @@ public class ListActivity extends AppCompatActivity {
                 }
             }
         });
+        SearchView searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String cedula) {
+                filterPersonasByCedula(cedula,adapter);
+                return true;
+            }
+        });
 
     }
+    // Configurar el SearchView para filtrar por cédula
 
-    private void queryTest() {
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference credencialesRef = db.collection("credenciales");
-
-        Task<QuerySnapshot> queryTask = credencialesRef
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-
-                                // Verifica si el documento actual existe en Firestore
-                                if (documentSnapshot.exists()) {
-                                    // El documento con el usuario y contraseña existe
-
-                                    //finish();
-                                } else {
-                                    // El documento no existe con los valores proporcionados
-                                    // Maneja este caso según tus necesidades
-                                    //Toast.makeText(MainActivity.this, "CREDENCIALES INCORRECTAS", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Toast.makeText(MainActivity.this, "ERROR DE CONSULTA DE USUARIO", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-    }
 
     // Método para filtrar las personas por cédula
-    private void filterPersonasByCedula(String cedula) {
+    private void filterPersonasByCedula(String cedula, CustomListAdapter _adapter) {
         List<Persona> filteredList = new ArrayList<>();
         for (Persona persona : personas) {
             if (persona.getCedula().contains(cedula)) {
                 filteredList.add(persona);
             }
         }
-        adapter = new CustomListAdapter(filteredList, this);
-        recyclerView.setAdapter(adapter);
+        _adapter = new CustomListAdapter(filteredList, this);
+        recyclerView.setAdapter(_adapter);
     }
 }
