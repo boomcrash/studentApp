@@ -20,6 +20,9 @@
         android:theme="@style/Theme.StudentApp"
         tools:targetApi="31">
         <activity
+            android:name="com.example.studentapp.activity.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.studentapp.activity.perfilActivity"
             android:exported="false" />
         <activity
